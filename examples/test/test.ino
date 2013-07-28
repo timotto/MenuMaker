@@ -75,34 +75,18 @@ void loop() {
   int c = random(0, 12);
   Serial.println(NAMES[c<6?c:c%2==1?1:0]);
   switch(c) {
-    case 0:
-      MM.onUp();
-      break;
-    case 1:
-      MM.onDown();
-      break;
-    case 2:
-      MM.onLeft();
-      break;
-    case 3:
-      MM.onRight();
-      break;
-    case 4:
-      MM.onSelect();
-      break;
-    case 5:
-      MM.onBack();
-      break;
     case 6:
     case 8:
     case 10:
-      MM.onUp();
+      MM.input(MENUMAKER_INPUT_UP);
       break;
     case 7:
     case 9:
     case 11:
-      MM.onDown();
+      MM.input(MENUMAKER_INPUT_DOWN);
       break;
+    default:
+      MM.input(c+1);
   }
   delay(500);
 }

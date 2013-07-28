@@ -47,8 +47,12 @@ void MenuMaker::onHighlight(int index) {
 }
 
 void MenuMaker::input(int key) {
+	if (currentMenu->entries->size()==0 && ! (key == MENUMAKER_INPUT_LEFT || key == MENUMAKER_INPUT_BACK))
+		return;
+		
 	switch(key) {
 		case MENUMAKER_INPUT_UP:
+				
 			if (currentEntry <= 0)
 				currentEntry = currentMenu->entries->size()-1;
 			// TODO else if (rollover)
