@@ -1,0 +1,67 @@
+{
+"menu" :	{
+	"main" : {
+		"title" : "Example",
+		"entries" :	{
+			"subs" : { "title" : "Submenus" , "order": 0},
+			"lists" : { "title" : "Lists" , "order": 1},
+			"edits" : { "title" : "Edit Inputs" , "order": 2}
+		}
+	},
+	"subs" : {
+		"title" : "Submenus",
+		"entries" :	{
+			"subs" : { "title" : "Same again 1" , "order": 0},
+			"subs" : { "title" : "Same again 2" , "order": 1},
+			"subs" : { "title" : "Same again 3" , "order": 2}
+		}
+	},
+	"lists" : {
+		"title" : "Lists",
+		"entries" :	{
+			"actions" : { "title" : "Actions" , "order": 0},
+			"single" : { "title" : "Single select" , "order": 1},
+			"multi" : { "title" : "Multiple select" , "order": 2}
+		}
+	},
+	"actions" : {
+		"title" : "Actions",
+		"entries" :	{
+			"action_1" : { "title" : "Action 1", "order": 0},
+			"action_2" : { "title" : "Action 2", "order": 1},
+			"action_3" : { "title" : "Action 3", "order": 2 },
+			"action_4" : { "title" : "Action 4", "order": 3 }
+		}
+	},
+	"single" : {
+		"title" : "Single select",
+		"select" : "single",
+		"entries" :	{ 
+			"entry_1": { "title" : "Entry 1", "order": 0 },
+			"entry_2" : { "title" : "Entry 2", "order": 1 },
+			"entry_3" : { "title" : "Entry 3", "order": 2 },
+			"entry_4" : { "title" : "Entry 4", "order": 3 },
+			"entry_5" : { "title" : "Entry 5", "order": 4 },
+			"entry_6" : { "title" : "Entry 6", "order": 5 }
+		}
+	},
+	"multi" : {
+		"title" : "Multiple select",
+		"select" : "multi",
+		"entries" :	{ 
+			"entry_1": { "title" : "Entry 1", "order": 0 },
+			"entry_2" : { "title" : "Entry 2", "order": 1 },
+			"entry_3" : { "title" : "Entry 3", "order": 2 },
+			"entry_4" : { "title" : "Entry 4", "order": 3 },
+			"entry_5" : { "title" : "Entry 5", "order": 4 },
+			"entry_6" : { "title" : "Entry 6", "order": 5 }
+		}
+	},
+	"edits" : {
+		"title" : "Edit Inputs",
+		"entries" :	{ 
+			"edit_1": { "title" : "Integer", "order": 0, "input": "int" }
+		}
+	}
+}
+}

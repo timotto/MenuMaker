@@ -1,12 +1,12 @@
 #include "MenuMaker.h"
 
-MenuMakerMenu* MenuMakerMenu::addEntry(int id, const char* title, bool submenu) {
-	entries->add(new MenuMakerEntry(id, title, submenu));
+MenuMakerMenu* MenuMakerMenu::addEntry(int id, const char* title, int type) {
+	entries->add(new MenuMakerEntry(id, title, type));
 	return this;
 }
 
-MenuMakerMenu* MenuMaker::createMenu(int id, const char* title) {
-	MenuMakerMenu* m = new MenuMakerMenu(id, title);
+MenuMakerMenu* MenuMaker::createMenu(int id, const char* title, int type) {
+	MenuMakerMenu* m = new MenuMakerMenu(id, title, type);
 	menus->add(m);
 	return m;
 }
@@ -80,11 +80,14 @@ void MenuMaker::onRight(){
 
 void MenuMaker::onSelect(){
 	MenuMakerEntry* e = currentMenu->entries->get(currentEntry);
-	if (e->submenu) {
-		select(resolveMenu(e->id));
-		return;
+	switch(e->type) { // Jaguar
+		case MENUMAKER_TYPE_SUBMENU:
+			select(resolveMenu(e->id));
+			break;
+		default:
+			onEntry(e->id);
+			break;
 	}
-	onEntry(e->id);
 }
 
 void MenuMaker::onBack() {
@@ -115,28 +118,16 @@ MenuMakerMenu* MenuMaker::resolveMenu(int id) {
 			continue;
 		return m;
 	}
-	Serial.print("*ERROR* Failed to resolve menu id ");
-	Serial.println(id);
+	// this is an error!
+	while(1);
 	return 0;
 }
 
-MenuMaker::MenuMaker() : currentMenu(0) {
-	menus = new LinkedList<MenuMakerMenu*>();
-	history = new LinkedList<MenuMakerMenu*>();
-	onCreate();
-};
-
-MenuMakerMenu::MenuMakerMenu(int id, const char* title) : id(id) {
+MenuMakerMenu::MenuMakerMenu(int id, const char* title, int type) : id(id), title(title), type(type) {
 	entries = new LinkedList<MenuMakerEntry*>();
-	this->title = title;
-//	this->title = (char*)malloc(strlen(title)+1);
-//	strcpy(this->title, title);
 }
 
-MenuMakerEntry::MenuMakerEntry(int id, const char *title, bool submenu) : id(id), submenu(submenu), overlay(0) {
-	this->title = title;
-//	this->title = (char*)malloc(strlen(title)+1);
-//	strcpy(this->title, title);
+MenuMakerEntry::MenuMakerEntry(int id, const char *title, int type) : id(id), title(title), type(type), overlay(0) {
 };
 
 void MenuMakerEntry::setOverlay(const char *text) {
