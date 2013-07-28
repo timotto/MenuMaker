@@ -1,6 +1,13 @@
 #ifndef MENUMAKER_H_
 #define MENUMAKER_H_
 
+#define MENUMAKER_INPUT_UP			1
+#define MENUMAKER_INPUT_DOWN		2
+#define MENUMAKER_INPUT_LEFT		3
+#define MENUMAKER_INPUT_RIGHT		4
+#define MENUMAKER_INPUT_SELECT		5
+#define MENUMAKER_INPUT_BACK		6
+
 #define MENUMAKER_TYPE_DEFAULT		0
 #define MENUMAKER_TYPE_SUBMENU		1
 #define MENUMAKER_TYPE_SELECT_SINGLE	2
@@ -47,12 +54,7 @@ public:
 	void redraw();
 	void show(int id);
 
-	void onUp();
-	void onDown();
-	void onLeft();
-	void onRight();
-	void onSelect();
-	void onBack();
+	void input(int key);
 	/**
 	 * Tell the menu stack you want an item highlighted.
 	 * Function name is stupid.

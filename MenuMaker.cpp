@@ -46,68 +46,76 @@ void MenuMaker::onHighlight(int index) {
 	}
 }
 
-void MenuMaker::onUp(){
-	if (currentEntry <= 0)
-		currentEntry = currentMenu->entries->size()-1;
-	else currentEntry--;
-	
-	highlight(currentEntry);
-}
-
-void MenuMaker::onDown(){
-	if (currentEntry >= currentMenu->entries->size()-1)
-		currentEntry = 0;
-	else currentEntry++;
-	
-	highlight(currentEntry);
-}
-
-void MenuMaker::onLeft(){
-	// TODO
-	// if in widget:
-	// decrease()
-	// if in menu
-	onBack();
-}
-
-void MenuMaker::onRight(){
-	// TODO
-	// if in widget:
-	// increase()
-	// if in menu
-	onSelect();
-}
-
-void MenuMaker::onSelect(){
-	MenuMakerEntry* e = currentMenu->entries->get(currentEntry);
-	switch(e->type) { // Jaguar
-		case MENUMAKER_TYPE_SUBMENU:
-			select(resolveMenu(e->id));
+void MenuMaker::input(int key) {
+	switch(key) {
+		case MENUMAKER_INPUT_UP:
+			if (currentEntry <= 0)
+				currentEntry = currentMenu->entries->size()-1;
+			// TODO else if (rollover)
+			else currentEntry--;
 			break;
+
+		case MENUMAKER_INPUT_DOWN:
+			if (currentEntry >= currentMenu->entries->size()-1)
+				currentEntry = 0;
+			else currentEntry++;
+			break;
+			
+		case MENUMAKER_INPUT_LEFT:
+			// TODO
+			// if in widget:
+			// decrease()
+			// else if in menu
+			input(MENUMAKER_INPUT_BACK);
+			return;
+			
+		case MENUMAKER_INPUT_RIGHT:
+			// TODO
+			// if in widget:
+			// increase()
+			// else if in menu
+			input(MENUMAKER_INPUT_SELECT);
+			return;
+			
+		case MENUMAKER_INPUT_BACK: {
+				if (history->size() <= 0)
+					return;
+				
+				MenuMakerMenu* b = history->pop();
+				const int oid = currentMenu->id;
+				int from = 0;
+				const int n = b->entries->size();
+				for (int i=0;i<n;i++) {
+					if (b->entries->get(i)->id == oid) {
+						from = i;
+						break;
+					}
+				}
+				
+				currentEntry = from;
+				currentMenu = b;
+				redraw();
+				return;
+			}
+			
+		case MENUMAKER_INPUT_SELECT: {
+				MenuMakerEntry* e = currentMenu->entries->get(currentEntry);
+				switch(e->type) { // Jaguar
+					case MENUMAKER_TYPE_SUBMENU:
+						select(resolveMenu(e->id));
+						break;
+					default:
+						onEntry(e->id);
+						break;
+				}
+				return;
+			}
+		
 		default:
-			onEntry(e->id);
-			break;
+			return;
 	}
-}
 
-void MenuMaker::onBack() {
-	if (history->size() <= 0)
-		return;
-	
-	MenuMakerMenu* b = history->pop();
-	const int oid = currentMenu->id;
-	int from = 0;
-	const int n = b->entries->size();
-	for (int i=0;i<n;i++) {
-		if (b->entries->get(i)->id == oid) {
-			from = i;
-			break;
-		}
-	}
-	
-	currentEntry = from;
-	currentMenu = b;
-	redraw();
+	highlight(currentEntry);
 }
 
 MenuMakerMenu* MenuMaker::resolveMenu(int id) {
