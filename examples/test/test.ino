@@ -7,10 +7,8 @@ class MenuMakerImpl : public MenuMaker {
   void onEntry(int id);
   int selected;
   MenuMakerMenu* m;
-protected:
-  void onCreate();
 public:
-  MenuMakerImpl();
+  virtual void begin();
 };
 #include "MenuMaker_menu.h"
 
@@ -65,6 +63,7 @@ MenuMakerImpl MM; // 4668
 void setup() {
   Serial.begin(57600);
   Serial.println("Started");
+  MM.begin();
   Serial.print("Menus: ");
   Serial.println(MM.menus->size());
   Serial.println("show...");

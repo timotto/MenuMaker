@@ -41,7 +41,7 @@ const char *MENUMAKER_ID_STRING_15 = "Same again 3";
 const char *MENUMAKER_ID_STRING_16 = "Edit Inputs";
 const char *MENUMAKER_ID_STRING_17 = "Integer";
 const char *MENUMAKER_ID_STRING_18 = "Example";
-MenuMakerImpl::MenuMakerImpl() : MenuMaker() {
+void MenuMakerImpl::begin() {
 	createMenu(MENUMAKER_ID_single, MENUMAKER_ID_STRING_0, MENUMAKER_TYPE_SELECT_SINGLE)
 		->addEntry(MENUMAKER_ID_entry_1, MENUMAKER_ID_STRING_5,MENUMAKER_TYPE_DEFAULT)
 		->addEntry(MENUMAKER_ID_entry_2, MENUMAKER_ID_STRING_2,MENUMAKER_TYPE_DEFAULT)

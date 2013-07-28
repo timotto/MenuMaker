@@ -123,13 +123,6 @@ MenuMakerMenu* MenuMaker::resolveMenu(int id) {
 	return 0;
 }
 
-MenuMakerMenu::MenuMakerMenu(int id, const char* title, int type) : id(id), title(title), type(type) {
-	entries = new LinkedList<MenuMakerEntry*>();
-}
-
-MenuMakerEntry::MenuMakerEntry(int id, const char *title, int type) : id(id), title(title), type(type), overlay(0) {
-};
-
 void MenuMakerEntry::setOverlay(const char *text) {
 	this->overlay = text;
 }

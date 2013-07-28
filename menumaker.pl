@@ -94,8 +94,8 @@ for(my $i=0;$i<$stringId;$i++) {
 }
 
 
-printf FILE "%s::%s() : MenuMaker() {\n",
-	$SINGLETON_NAME, $SINGLETON_NAME;
+printf FILE "void %s::init() {\n",
+	$SINGLETON_NAME;
 
 #define MENUMAKER_TYPE_DEFAULT		0
 #define MENUMAKER_TYPE_SUBMENU		1
