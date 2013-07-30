@@ -15,6 +15,8 @@
 #define MENUMAKER_TYPE_INPUT_INTEGER	4
 
 #include "LinkedList.h"
+#include "Arduino.h" // for malloc
+#include "string.h" // for memset
 
 class MenuMakerEntry {
 public:
@@ -23,6 +25,7 @@ public:
 	const char *overlay;
 	int type;
 	MenuMakerEntry(int id, const char *title, int type) : id(id), title(title), type(type), overlay(0) {};
+	~MenuMakerEntry(){};
 	void setOverlay(const char *text);
 	const char* text();
 	
@@ -30,15 +33,36 @@ public:
 
 class MenuMakerMenu {
 public:
-	MenuMakerMenu(int id, const char* title, int type) : id(id), title(title), type(type) {
+	MenuMakerMenu(int id, const char* title, int type, int numEntries) : id(id), title(title), type(type) {
 		entries = new LinkedList<MenuMakerEntry*>();
+		switch (type) {
+			case MENUMAKER_TYPE_SELECT_SINGLE:
+				// to store the id of the selected entry
+				choice = malloc(sizeof(int));
+				*(int*)choice = -1;
+				break;
+			case MENUMAKER_TYPE_SELECT_MULTI:
+				// to store the id of the selected entry
+				choice = malloc(numEntries * sizeof(bool));
+				memset(choice, 0, numEntries * sizeof(bool)); // sizeof(choice)?
+				break;
+			default:
+				choice = 0;
+				break;
+		}
 	}
 	MenuMakerMenu* addEntry(int id, const char* title, int type);
+	void removeEntry(int id);
+	void removeEntries();
+	
+	int indexOfEntryId(int id);
+	bool isPosSelected(int pos);
 
 	int id;
 	const char* title;
 	int type;
 	LinkedList<MenuMakerEntry*> *entries;
+	void *choice;
 };
 
 class MenuMaker {
@@ -77,7 +101,12 @@ protected:
 	// Called for action entries
 	virtual void onEntry(int id) = 0;
 	
-	MenuMakerMenu* createMenu(int id, const char* title, int type);
+	void createMenus(int n);
+	MenuMakerMenu* createMenu(int id, const char* title, int type, int numEntries);
+	
+	virtual void onExit(MenuMakerMenu* menu) {};
+	virtual void onPrepare(MenuMakerMenu* menu) {};
+	virtual void onSelection(MenuMakerMenu* menu, void* old) {};
 	
 private:
 	void select(MenuMakerMenu *menu);

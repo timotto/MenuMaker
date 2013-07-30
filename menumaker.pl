@@ -14,6 +14,7 @@ my $BYTE_PER_MENU = 2 + $PTR_SIZE + 32;
 # Change this to your liking or add a command line option to this script
 my $SINGLETON_NAME = "MenuMakerImpl";
 my $ID_PREFIX = "MENUMAKER_ID_";
+my $ID_BASE = 16383; # so it won't clash with your IDs in switch/case
 
 use strict;
 use JSON;
@@ -80,8 +81,10 @@ printf FILE "#ifdef __AVR__
 my $textBytes = 0;
 my $menuCount = 0;
 my $entryCount = 0;
+my $boolSelections = 0;
+my $intSelections = 0;
 
-my $id_num = 0;
+my $id_num = $ID_BASE;
 foreach my $id (keys %ids) {
 	printf FILE "#define %s%s %d\n", 
 		$ID_PREFIX, $id, $id_num++;
@@ -94,8 +97,8 @@ for(my $i=0;$i<$stringId;$i++) {
 }
 
 
-printf FILE "void %s::begin() {\n",
-	$SINGLETON_NAME;
+printf FILE "void %s::begin() {\n\tcreateMenus(%d);\n",
+	$SINGLETON_NAME, scalar keys %{$all->{menu}};
 
 #define MENUMAKER_TYPE_DEFAULT		0
 #define MENUMAKER_TYPE_SUBMENU		1
@@ -105,29 +108,35 @@ printf FILE "void %s::begin() {\n",
 
 foreach my $menu_id (keys %{$all->{menu}}) {
 	my $menu = $all->{menu}->{$menu_id};
-	my $type = "MENUMAKER_TYPE_DEFAULT";
+	my $menutype = "MENUMAKER_TYPE_DEFAULT";
 	if (defined($menu->{select})){
 		if ("single" eq $menu->{select}) {
-			$type = "MENUMAKER_TYPE_SELECT_SINGLE";
+			$menutype = "MENUMAKER_TYPE_SELECT_SINGLE";
 		} elsif ("multi" eq $menu->{select}) {
-			$type = "MENUMAKER_TYPE_SELECT_MULTI";
+			$menutype = "MENUMAKER_TYPE_SELECT_MULTI";
 		}
 	}
-	printf FILE "\tcreateMenu(%s%s, %sSTRING_%d, %s)\n", 
-		$ID_PREFIX, $menu_id, $ID_PREFIX, $menu->{title_string_id}, $type;
+	printf FILE "\tcreateMenu(%s%s, %sSTRING_%d, %s, %d)\n", 
+		$ID_PREFIX, $menu_id, $ID_PREFIX, $menu->{title_string_id}, $menutype, scalar keys %{$menu->{entries}};
 
 	my %entries;
 	foreach my $entry_id (keys %{$menu->{entries}}) {
 		my $entry = $menu->{entries}->{$entry_id};
 		
 		my $order = $entry->{order};
-		my $type = "MENUMAKER_TYPE_DEFAULT";
-		if (defined($all->{menu}->{$entry_id})) {
-			$type = "MENUMAKER_TYPE_SUBMENU";
-		} elsif (defined($menu->{input})) {
-			if ($menu->{input} eq "int") {
-				$type = "MENUMAKER_TYPE_INPUT_INTEGER";
+		
+		my $type;
+		if ($menutype eq "MENUMAKER_TYPE_DEFAULT") {
+			$type = "MENUMAKER_TYPE_DEFAULT";
+			if (defined($all->{menu}->{$entry_id})) {
+				$type = "MENUMAKER_TYPE_SUBMENU";
+			} elsif (defined($menu->{input})) {
+				if ($menu->{input} eq "int") {
+					$type = "MENUMAKER_TYPE_INPUT_INTEGER";
+				}
 			}
+		} else {
+			$type = $menutype;
 		}
 
 		$entries{$order} = sprintf "->addEntry(%s%s, %sSTRING_%d,%s)",
