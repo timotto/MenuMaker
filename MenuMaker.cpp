@@ -146,6 +146,7 @@ void MenuMaker::input(int key) {
 					}
 				}
 				
+				onLeave(oldMenu);
 				currentEntry = from;
 				currentMenu = b;
 				redraw();

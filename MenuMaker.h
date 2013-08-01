@@ -104,6 +104,7 @@ protected:
 	void createMenus(int n);
 	MenuMakerMenu* createMenu(int id, const char* title, int type, int numEntries);
 	
+	virtual void onLeave(MenuMakerMenu* menu) {};
 	virtual void onExit(MenuMakerMenu* menu) {};
 	virtual void onPrepare(MenuMakerMenu* menu) {};
 	virtual void onSelection(MenuMakerMenu* menu, void* old) {};
